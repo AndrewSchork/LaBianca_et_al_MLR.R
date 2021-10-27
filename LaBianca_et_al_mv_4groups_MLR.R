@@ -10,7 +10,7 @@ library( data.table )
 
 ## Some functions
 
-HET.v <- function( betas. hessian, variable, outcomes ) {
+HET.v <- function( betas, hessian, variable, outcomes ) {
 
   N <- length( outcomes )
   h.inds <- paste( outcomes, variable, sep=":" )
@@ -142,6 +142,8 @@ output.voi <- rbind(
                     c( "p.marginal.global", signif( out.p.global.each,4 ) ),
                     c( "p.joint.global", rep( signif( out.p.global.all,4 ), length(out.p.global.each) ) )
                    )
+
+## Saave output to outFilePath
 
 write.table( output.voi, file=outFilePath, row.names=F, col.names=T, quote=F )
 
