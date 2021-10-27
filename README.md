@@ -1,5 +1,5 @@
 # LaBianca_et_al_MLR.R
-Multinomial logistic regression code from LaBianca et al.
+Multinomial logistic regression from LaBianca et al.
 
 This is an aadaptation of the R code used to analyze polygenic profiles in La Bianca et al (https://www.medrxiv.org/content/10.1101/2021.07.13.21260299v1).
 
