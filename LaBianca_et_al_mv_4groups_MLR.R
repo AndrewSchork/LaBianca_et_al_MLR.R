@@ -34,6 +34,10 @@ HET.v <- function( betas. hessian, variable, outcomes ) {
 
 ## Set up input / edit this section
 
+# output file / .txt
+
+outFilePath <- "path/to/an/outfile.txt"
+
 # Assumes all data is in one data.table, with informative column names
 
 data <- data.table( yourData )
@@ -101,15 +105,45 @@ for ( var in voi ) {
 
 }
 
-## Global p: joint significance of all voi for variability acrcoss all groups
+## Global p: joint significance of all voi for variability simultaneously across all groups
 
 out.anova <- anova( null.model, out.model )
 out.p.global.all <- out.anova[[ 7 ]][ 2 ]
 
-## Global p: marginal significance of each voi for variability acrcoss all groups
+## Global p: marginal significance of each voi testing for variability simultaneously across all groups
 
+out.p.global.each <- NULL
 
+for ( var in voi ) {
+  
+  temp.voi <- voi[ voi != var ]
+  temp.null.expr <- as.formula( paste( vo, 
+                              paste( paste( temp.voi, collapse=" + " ), paste( voni, collapse=" + " ), sep=" + " ), 
+                              sep=" ~ " ) )
+  temp.null.model <- multinom( temp.null.expr, data=data, Hess=T, maxit=500 )
+  temp.anova <- anova( temp.null.model, out.model )
+  temp.p.global.each <- temp.anova[[ 7 ]][ 2 ]
 
+  out.p.global.each <- c( out.p.global.each, temp.p.global.each )
+
+}
+
+## Build output
+
+output.voi <- rbind( 
+                    cbind( c( "Beta.1", "Beta.2", "Beta.3" ), signif( out.betas,4 ) ),
+                    cbind( c( "se.1", "se.2", "se.3" ), signif( out.se,4 ) ),
+                    cbind( c( "z.1", "z.2", "z.3" ), signif( out.z,4 ) ),
+                    cbind( c( "p.1", "p.2", "p.3" ), signif( out.p,4 ) ),
+                    c( "het.p.12", signif( out.hetp.12,4 ) ),
+                    c( "het.p.13", signif( out.hetp.13,4 ) ),
+                    c( "het.p.23", signif( out.hetp.23,4 ) ),
+                    c( "het.p.123", signif( out.hetp.123,4 ) ),
+                    c( "p.marginal.global", signif( out.p.global.each,4 ) ),
+                    c( "p.joint.global", rep( signif( out.p.global.all,4 ), length(out.p.global.each) ) )
+                   )
+
+write.table( output.voi, file=outFilePath, row.names=F, col.names=T, quote=F )
 
 
 
