@@ -44,7 +44,7 @@ data <- data.table( yourData )
 
 # Define outcome / column name in data
 #   Outcome should be numbered groups
-#   e.g., 0,1,2,3 for controls, ADHD only, ASD only, ADHD and ASD, respectiveely
+#   e.g., 0,1,2 for controls, adult ADHD, or child ADHD, respectiveely
 
 vo <- "outcome"
 
