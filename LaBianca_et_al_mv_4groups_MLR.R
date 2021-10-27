@@ -1,7 +1,7 @@
 ## Multivariate multinomial logistic regression as applied in LaBianca et al. to profiles of PGS
-## multivariate to note multiple variables of interest (PGS) being fit jointly, 
+## Multivariate to note multiple variables of interest (PGS) being fit jointly, 
 ##    in addition to jointly fit covariates
-## Currently coded for 4 groups - the ADHD +/- ASD scenario in thee paper
+## Coded for 4 groups - the ADHD +/- ASD scenario in the paper
 
 
 ## Required packages
@@ -32,27 +32,32 @@ HET.v <- function( betas. hessian, variable, outcomes ) {
   }
 }
 
-## Set up input
+## Set up input / edit this section
 
 # Assumes all data is in one data.table, with informative column names
 
-data <- data.table( data )
+data <- data.table( yourData )
 
 # Define outcome / column name in data
 #   Outcome should be numbered groups
 #   e.g., 0,1,2,3 for controls, ADHD only, ASD only, ADHD and ASD, respectiveely
 
-vo <- "z"
+vo <- "outcome"
 
 # Define Variables of interest / column names in data
 
-voi <- c( "PRS19", "PRS22", "PRS23", "PRS10" ) 
+voi <- c( "voi1", "voi2", "voi3", ... ) 
 
 # Define Variables of no interest (e.g., covariates) / column names in data
 
-voni <- c( "C1", "C2", "C3", "C4", "C5" )
+voni <- c( "cov1", "cov2", "cov3", "cov4", "cov5", ... )
 
-## Run analysis
+## Run analysis / don't edit for 4 groups analysis
+
+# Scale variables
+for ( var in c( voi,voni ) ) {
+  data[ ,var ] <- scale( data[ ,var ] )
+}
 
 # fit global null model
 
@@ -88,15 +93,20 @@ for ( var in voi ) {
   temp.hetp.13 <- 10^-HET.v( out.betas[ c(1,3), var ], out.model$Hessian, var, c("1","3") )
   temp.hetp.23 <- 10^-HET.v( out.betas[ c(2,3), var ], out.model$Hessian, var, c("2","3") )
   temp.hetp.123 <- 10^-HET.v( out.betas[ c(1,2,3), var ], out.model$Hessian, var, c("1","2","3") )
+  
+  out.hetp.12 <- c( out.hetp.12, temp.hetp.12 )
+  out.hetp.13 <- c( out.hetp.13, temp.hetp.13 )
+  out.hetp.23 <- c( out.hetp.23, temp.hetp.23 )
+  out.hetp.123 <- c( out.hetp.123, temp.hetp.123 )
 
+}
 
+## Global p: joint significance of all voi for variability acrcoss all groups
 
+out.anova <- anova( null.model, out.model )
+out.p.global.all <- out.anova[[ 7 ]][ 2 ]
 
-
-
-
-
-
+## Global p: marginal significance of each voi for variability acrcoss all groups
 
 
 
