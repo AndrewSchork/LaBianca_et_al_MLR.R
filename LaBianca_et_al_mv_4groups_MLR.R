@@ -143,7 +143,7 @@ output.voi <- rbind(
                     c( "p.joint.global", rep( signif( out.p.global.all,4 ), length(out.p.global.each) ) )
                    )
 
-## Saave output to outFilePath
+## Save output to outFilePath
 
 write.table( output.voi, file=outFilePath, row.names=F, col.names=T, quote=F )
 
