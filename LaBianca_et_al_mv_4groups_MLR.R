@@ -30,6 +30,7 @@ HET.v <- function( betas, hessian, variable, outcomes ) {
     chi2 <- Tbeta %*% solve( V_Hess ) %*% Tbeta
     nlog10pval <- pchisq( chi2, df=2, lower.tail=F, log.p=T ) / log(10) * (-1)        
   }
+    return(nlog10pval)
 }
 
 ## Set up input / edit this section
